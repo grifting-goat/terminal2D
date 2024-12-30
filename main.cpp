@@ -4,10 +4,13 @@ Driver file for testing the functionallity of 2D terminal game components
 created by levi morris - 12/29/24
 */
 
-#include<iostream>
+#pragma comment(lib, "User32.lib")
+
+#include <iostream>
+#include <Windows.h>
 #include <chrono>
-#include"engine/Display.h"
-#include"engine/Game.h"
+#include "engine/Display.h"
+#include "engine/Game.h"
 using namespace std;
 
 const int TICK_RATE = 120;
@@ -29,11 +32,22 @@ int main() {
     double dTick; //display tick
     double gTick; //game tick
 
-    Display window;
-    window.setFPS(dTick);
+    std::pair<float, float> clientPos = {250, 250}; //temp for stuff
+    float speed = 15; //also temp
 
     Game game;
     game.attachTime(gTick);
+    game.voidSpace(' ');
+
+    Display window;
+    //attach relavent obj/data
+    window.attachGame(game);
+    window.attachCamera(clientPos);
+    window.attachTick(dTick);
+    //toggle settings
+    window.toggleFramesPerSecond(true);
+    window.toggleCameraCenter(true);
+    window.toggleDynamicVoid(true);    
 
     while(true) {
         //timing
@@ -55,8 +69,27 @@ int main() {
             tick1 = tick2;
         }
 
-        window.testDisplay('.');
+        //temp this will later be handeled in player class
+
+        //check for exit
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {exit(0);}
+        if (GetAsyncKeyState(VK_BACK) & 0x8000) {exit(0);}
+
+        //row travesal
+        if      (GetAsyncKeyState('W') & 0x8000) {clientPos.first -= speed*dTick;}
+        else if (GetAsyncKeyState('S') & 0x8000) {clientPos.first += speed*dTick;}
+
+        //col traversal
+        if      (GetAsyncKeyState('D') & 0x8000) {clientPos.second += speed*dTick;}
+        else if (GetAsyncKeyState('A') & 0x8000) {clientPos.second -= speed*dTick;}
+
+///*
         
-    }
+        window.update();
+        window.flip();
+      
+//*/
+
+}
 
 }
