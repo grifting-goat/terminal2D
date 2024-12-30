@@ -1,3 +1,12 @@
+/*
+Header File for Display class
+
+handles displaying the graphics and the terminal window
+
+created by levi morris - 12/29/24
+*/
+
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
@@ -16,16 +25,28 @@ private:
 
         //properties
         bool resizable;
-public:
+        bool showFramesPerSecond;
 
+        //attached vars
+        double *dTick;
+        std::pair<float, float> *camera; //<r.c>
+public:
+    //constructor
     Display();
 
+    //static display window
     Display(int fixedWidth, int fixedHeight);
 
     //test to see if basics is working
     void testDisplay(char c);
 
-    //update the display(flip is not the correct term but it sounds cool)
+    //attaches the camera
+    void attachCamera(std::pair<float, float> &camPos);
+
+    //update the frame buffer
+    void update();
+
+    //update the display(flip is not the correct terminology but it sounds cool)
     void flip();
 
     //test if the terminal has been resized
@@ -34,6 +55,13 @@ public:
     //resize display
     void resize();
 
+    //turns on fps and attaches a tick varble
+    void setFPS(double &tick);
+
+    //set fps to on or off
+    void showFPS(bool show);
+
+    //destructor
     ~Display();
 
 };
