@@ -1,5 +1,11 @@
-#include "Display.h"
+/*
+Implimentation file for display class
 
+created by levi morris - 12/29/24
+*/
+
+#include "Display.h"
+#include <string>
 
 Display::Display() {
         // Create Frame // Get Windows dimensions  // goofy windows stuff
@@ -36,17 +42,36 @@ Display::Display(int fixedWidth, int fixedHeight) {
 }
 
 void Display::testDisplay(char c) {
-    if (this->checkResized()) {this->resize();}//test if needs resize
+    if (this->checkResized()) {this->resize();}//test for resize
 
     for (int i = 0; i < tWidth * tHeight-1; i++) {frame[i] = c;} //make it all the character
 
     this->flip(); //update display
 }
 
+void Display::attachCamera(std::pair<float, float> &camPos) {
+    camera = &camPos;
+}
+
+void Display::update() {
+    //get data from Game
+    //use the attached camera to add the relevant stuff to display buffer(frame)
+}
+
 void Display::flip() {
+    //add postProcess overlays
+    if(showFramesPerSecond) {
+        std::wstring fps = L"FPS: " + std::to_wstring(static_cast<int>(1/(*dTick)));
+        if (fps.size() < tWidth) { //dont try to wrie at frame[-1]
+            for (int i = 0; i < fps.size(); i++) {frame[tWidth-fps.size()+i] = fps[i];}
+        }
+    }
+
     //displays the content of the frame
-    frame[tWidth * tHeight - 1] = '\0';
+    frame[tWidth * tHeight - 1] = L'\0';
     WriteConsoleOutputCharacterW(hCmd, frame, tWidth * tHeight, {0, 0}, &dwBytesWritten);
+
+
 
 }
 
@@ -79,6 +104,14 @@ void Display::resize() {
 
 }
 
+void Display::setFPS(double &tick) {
+    showFramesPerSecond = true;
+    dTick = &tick;  
+}
+
+void Display::showFPS(bool show) {
+    showFramesPerSecond = show;
+}
 
 Display::~Display() {
     CloseHandle(hCmd);
