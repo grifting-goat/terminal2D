@@ -4,8 +4,11 @@ Implimentation file for display class
 created by levi morris - 12/29/24
 */
 
+//known issues
+//- resize does not always work perfectly
+
 #include "Display.h"
-#include <string>
+
 
 Display::Display() {
         // Create Frame // Get Windows dimensions  // goofy windows stuff
@@ -25,6 +28,9 @@ Display::Display() {
         frame = new wchar_t[tWidth * tHeight];
 
         resizable = true;
+        showFramesPerSecond = false;
+        showCameraCenter = false;
+        dynamicVoid = false;
 }
 
 Display::Display(int fixedWidth, int fixedHeight) {
@@ -39,23 +45,61 @@ Display::Display(int fixedWidth, int fixedHeight) {
         frame = new wchar_t[tWidth * tHeight];
 
         resizable = false;
+        showFramesPerSecond = false;
+        showCameraCenter = false;
+        dynamicVoid = false;
 }
 
-void Display::testDisplay(char c) {
-    if (this->checkResized()) {this->resize();}//test for resize
 
-    for (int i = 0; i < tWidth * tHeight-1; i++) {frame[i] = c;} //make it all the character
+bool Display::attachGame(Game &agame) {
+    if (&agame != nullptr) {
+        //get the game object and gamespace
+        game = &agame;
+        gameSpace = game->getSpaceRef();
 
-    this->flip(); //update display
+        //get dimensions easier
+        auto dims = game->getSpaceDimRefs();
+        gHeight = dims.first;
+        gWidth = dims.second;
+
+        return true;
+    }
+    return false;//attachment failed
 }
 
-void Display::attachCamera(std::pair<float, float> &camPos) {
-    camera = &camPos;
+bool Display::attachCamera(std::pair<float, float> &camPos) {
+    if (&camPos != nullptr) {camera = &camPos; return true;}
+    return false;//attachment failed
+}
+
+bool Display::attachTick(double &tick) {
+    dTick = &tick;  //add protections later
+    return true;
 }
 
 void Display::update() {
-    //get data from Game
-    //use the attached camera to add the relevant stuff to display buffer(frame)
+    if (this->checkResized() && resizable) {this->resize();}//test for resize
+
+    int leftBound = static_cast<int>(camera->second +.5f) - (tWidth/2);
+    int rightBound = static_cast<int>(camera->second +.5f) + (tWidth/2);
+    int lowerBound = static_cast<int>(camera->first +.5f) - (tHeight/2);
+    int upperBound = static_cast<int>(camera->first +.5f) + (tHeight/2);
+
+    int n = 0;
+    for (int r = lowerBound; r < upperBound; r++) {
+        for (int c = leftBound; c < rightBound; c++) {
+            //if is inbounds
+            if (inBounds(r,c)) {frame[n++] = gameSpace[r][c];}
+            else{
+                if(dynamicVoid) {frame[n++] = voidArr[rand()%(sizeof(voidArr))];}
+                else {frame[n++] = voidChar;}
+            }
+
+            if (n >= tWidth * tHeight) {break;}
+
+        }
+    }
+
 }
 
 void Display::flip() {
@@ -66,12 +110,11 @@ void Display::flip() {
             for (int i = 0; i < fps.size(); i++) {frame[tWidth-fps.size()+i] = fps[i];}
         }
     }
+    if(showCameraCenter) {frame[tWidth * (tHeight/2) + (tWidth/2)] = centerChar;}
 
     //displays the content of the frame
     frame[tWidth * tHeight - 1] = L'\0';
     WriteConsoleOutputCharacterW(hCmd, frame, tWidth * tHeight, {0, 0}, &dwBytesWritten);
-
-
 
 }
 
@@ -104,16 +147,26 @@ void Display::resize() {
 
 }
 
-void Display::setFPS(double &tick) {
-    showFramesPerSecond = true;
-    dTick = &tick;  
+void Display::toggleFramesPerSecond(bool show) {
+    showFramesPerSecond = show;
 }
 
-void Display::showFPS(bool show) {
-    showFramesPerSecond = show;
+void Display::toggleCameraCenter(bool show) {
+    showCameraCenter = show;
+}
+
+void Display::toggleDynamicVoid(bool show) {
+    dynamicVoid = show;
 }
 
 Display::~Display() {
     CloseHandle(hCmd);
     delete[] frame;
+}
+
+//helper private funcitons
+
+bool Display::inBounds(int r, int c) {
+    if (r >= 0 && r < *gHeight && c >= 0 && c < *gWidth) {return true;}
+    return false;
 }

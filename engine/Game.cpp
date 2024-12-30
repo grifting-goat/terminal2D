@@ -10,28 +10,29 @@ created by levi morris - 12/30/24
 
 Game::Game() {
     //Map map();
-    levelScore = 0;
+    totalScore = 0;
     timeSpent = 0;
     //get map data
 
     //temp example
-    levelHeight = 1000;
-    levelWidth = 1000;
+    spaceHeight = 300;
+    spaceWidth = 300;
     allocateSpace();
 }
 
 Game::Game(Map &map) {
-    levelScore = 0;
+    totalScore = 0;
     timeSpent = 0;
     //get map data
+    //propogateMap();
 }
 
 void Game::incrementScore(int n) {
-    levelScore += n;
+    totalScore += n;
 }
 
 void Game::setScore(int newScore) {
-    levelScore = newScore;
+    totalScore = newScore;
 }
 
 void Game::attachTime(double& tick) {
@@ -64,8 +65,25 @@ std::string Game::popAnnouncement() {
     return "";
 }
 
+void Game::voidSpace(char c) {
+    for (int row = 0; row < spaceHeight; row++) {
+        for (int col = 0; col < spaceWidth; col++) {
+            space[row][col] = c;
+        }
+    }
+}
+
+std::pair<const int*, const int*> Game::getSpaceDimRefs() const {
+    return std::make_pair(&spaceHeight, &spaceWidth);
+}
+
+const char** Game::getSpaceRef() const { 
+    return const_cast<const char**>(space); 
+}
+
 void Game::update() {
     if (gTick != nullptr) {timeSpent += *gTick;}
+    //update things
 }
 
 Game::~Game() {
@@ -76,13 +94,14 @@ Game::~Game() {
 
 void Game::allocateSpace() {
     //makes a char array such that the game space can be indexed space[r][c]
-    space = new char*[levelHeight];
-    for (int i = 0; i < levelHeight; i++) {space[i] = new char[levelWidth];}
+    space = new char*[spaceHeight];
+    for (int i = 0; i < spaceHeight; i++) {space[i] = new char[spaceWidth];}
 
 }
 
 void Game::deallocateSpace() {
     //no more game space
-    for (int i = 0; i < levelHeight; i++) {delete[] space[i];}
+    for (int i = 0; i < spaceHeight; i++) {delete[] space[i];}
     delete[] space;
 }
+

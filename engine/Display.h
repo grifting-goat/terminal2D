@@ -10,8 +10,12 @@ created by levi morris - 12/29/24
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include<windows.h>
-#include<stdexcept>
+#include <windows.h>
+#include <stdexcept>
+#include "Game.h"
+#include "Display.h"
+#include <string>
+#include <iostream>
 
 class Display {
 
@@ -19,17 +23,32 @@ private:
         HANDLE hCmd; //Handle for the console window
         DWORD dwBytesWritten; //windows stuff
 
-        int tWidth; //width of terminal
         int tHeight; //height of terminal
+        int tWidth; //width of terminal
+
+        char centerChar = '@';
+        char voidChar = '.';
+        //hurts preformance but improves the game speed
+        char voidArr[12] = {'.', '.', '.','.','.','.','.','.','.', '-','~', '|'};
+
+        
+
+
         wchar_t *frame; //frame buffer for the display
 
         //properties
         bool resizable;
         bool showFramesPerSecond;
+        bool showCameraCenter;
+        bool dynamicVoid;
 
-        //attached vars
-        double *dTick;
-        std::pair<float, float> *camera; //<r.c>
+        //attached read only vars
+        const double *dTick = nullptr;
+        const std::pair<float, float> *camera = nullptr; //<r.c>
+        const Game *game = nullptr;
+        const int *gHeight;
+        const int *gWidth;
+        const char** gameSpace;
 public:
     //constructor
     Display();
@@ -37,11 +56,14 @@ public:
     //static display window
     Display(int fixedWidth, int fixedHeight);
 
-    //test to see if basics is working
-    void testDisplay(char c);
+    //attach game
+    bool attachGame(Game &agame);
 
     //attaches the camera
-    void attachCamera(std::pair<float, float> &camPos);
+    bool attachCamera(std::pair<float, float> &camPos);
+
+    //turns on fps and attaches a tick varble
+    bool attachTick(double &tick);
 
     //update the frame buffer
     void update();
@@ -55,15 +77,20 @@ public:
     //resize display
     void resize();
 
-    //turns on fps and attaches a tick varble
-    void setFPS(double &tick);
-
     //set fps to on or off
-    void showFPS(bool show);
+    void toggleFramesPerSecond(bool show);
+
+    //i wonder
+    void toggleCameraCenter(bool show);
+
+    void toggleDynamicVoid(bool show);
 
     //destructor
     ~Display();
 
+private: //helper functions
+
+    bool inBounds(int r, int c);
 };
 
 

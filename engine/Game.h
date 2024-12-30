@@ -10,7 +10,10 @@ created by levi morris - 12/30/24
 
 #include <queue>
 #include <string>
+#include <vector>
+
 #include "Map.h"
+#include "Entity.h"
 
 class Game {
 
@@ -18,16 +21,18 @@ private:
     std::queue<std::string> gameMessages;
     std::queue<std::string> gameAnnouncments;
 
-    int levelScore; //arbitrary units
+    int totalScore; //arbitrary units
     double timeSpent; //seconds
 
-    int levelWidth;
-    int levelHeight;
+    int spaceWidth;
+    int spaceHeight;
 
     double *gTick = nullptr; //get timing data
 
-    Map *levelMap; //get map
-    char** space;
+    Map *spaceMap; //get map
+    char** space; //holds the game space
+
+    std::vector<Entity*> entityList; //list of all entities
 
 public:
     //start a new game
@@ -57,6 +62,15 @@ public:
     //display the front announcement
     std::string popAnnouncement();
 
+    //make the game space a void of whatever //mostly for testing
+    void voidSpace(char c = '.');
+
+    //get the space sizes <&h,&w>
+    std::pair<const int*, const int*> getSpaceDimRefs() const;
+
+    //get the reference for the space
+    const char** getSpaceRef() const;
+
     //run once every game cycle;
     void update();
 
@@ -68,6 +82,10 @@ private:
 
     //unbuild the char array for the game space
     void deallocateSpace();
+
+    //take the data from the map into game space
+    void propogateMap();
+    
 
 };
 
