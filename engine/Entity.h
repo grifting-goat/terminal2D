@@ -36,10 +36,14 @@ public:
     float getMass();
 
     std::pair<float, float> getPosition();
+
+    std::pair<float, float> *getPositionRefs();
     
     std::pair<float, float> getMomentum();
 
     HITBOX getHitBox();
+
+   ~Entity();
     
 };
 

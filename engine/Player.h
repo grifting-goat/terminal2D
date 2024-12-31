@@ -14,9 +14,9 @@ private:
 
 public:
 
-    Player();
+    //Player();
 
-    ~Player();
+    //~Player();
 };
 
 #endif //PLAYER_H

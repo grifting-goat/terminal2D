@@ -58,6 +58,7 @@ public:
 
     //attaches the camera
     bool attachCamera(std::pair<float, float> &camPos);
+    bool attachCamera(std::pair<float, float> *camPos);
 
     //turns on fps and attaches a tick varble
     bool attachTick(double &tick);
