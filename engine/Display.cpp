@@ -72,6 +72,11 @@ bool Display::attachCamera(std::pair<float, float> &camPos) {
     return false;//attachment failed
 }
 
+bool Display::attachCamera(std::pair<float, float> *camPos) {
+    if (camPos != nullptr) {camera = camPos; return true;}
+    return false;//attachment failed
+}
+
 bool Display::attachTick(double &tick) {
     dTick = &tick;  //add protections later
     return true;

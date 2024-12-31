@@ -11,6 +11,7 @@ created by levi morris - 12/29/24
 #include <chrono>
 #include "engine/Display.h"
 #include "engine/Game.h"
+#include "engine/Player.h"
 using namespace std;
 
 const int TICK_RATE = 120;
@@ -32,17 +33,18 @@ int main() {
     double dTick; //display tick
     double gTick; //game tick
 
-    std::pair<float, float> clientPos = {250, 250}; //temp for stuff
+    Player player;
     float speed = 15; //also temp
 
     Game game;
     game.attachTime(gTick);
+    game.attachPlayer(player);
     game.voidSpace(' ');
 
     Display window;
     //attach relavent obj/data
     window.attachGame(game);
-    window.attachCamera(clientPos);
+    window.attachCamera(player.getPositionRefs());
     window.attachTick(dTick);
     //toggle settings
     window.toggleFramesPerSecond(true);
@@ -76,12 +78,12 @@ int main() {
         if (GetAsyncKeyState(VK_BACK) & 0x8000) {break;}
 
         //row travesal
-        if      (GetAsyncKeyState('W') & 0x8000) {clientPos.first -= speed*dTick;}
-        else if (GetAsyncKeyState('S') & 0x8000) {clientPos.first += speed*dTick;}
+        if      (GetAsyncKeyState('W') & 0x8000) {player.incrementPosition({-speed * dTick,0});}
+        else if (GetAsyncKeyState('S') & 0x8000) {player.incrementPosition({speed * dTick,0});}
 
         //col traversal
-        if      (GetAsyncKeyState('D') & 0x8000) {clientPos.second += speed*dTick;}
-        else if (GetAsyncKeyState('A') & 0x8000) {clientPos.second -= speed*dTick;}
+        if      (GetAsyncKeyState('D') & 0x8000) {player.incrementPosition({0,speed * dTick});}
+        else if (GetAsyncKeyState('A') & 0x8000) {player.incrementPosition({0,-speed * dTick});}
 
 ///*
         

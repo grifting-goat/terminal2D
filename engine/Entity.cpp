@@ -54,6 +54,10 @@ std::pair<float, float> Entity::getPosition() {
     return position;
 }
 
+std::pair<float, float>* Entity::getPositionRefs() {
+    return &position;
+}
+
 std::pair<float, float> Entity::getMomentum() {
     return momentum;
 }
