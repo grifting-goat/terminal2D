@@ -39,6 +39,10 @@ void Game::attachTime(double& tick) {
     gTick = &tick;
 }
 
+void Game::attachPlayer(Player &plyr) {
+    player = &plyr;
+}
+
 void Game::pushMessage(std::string message) {
     gameMessages.push(message);
 }

@@ -13,7 +13,7 @@ created by levi morris - 12/30/24
 #include <vector>
 
 #include "Map.h"
-#include "Entity.h"
+#include "Player.h"
 
 class Game {
 
@@ -21,8 +21,10 @@ private:
     std::queue<std::string> gameMessages;
     std::queue<std::string> gameAnnouncments;
 
+    //single player oriented
     int totalScore; //arbitrary units
     double timeSpent; //seconds
+    Player* player;
 
     int spaceWidth;
     int spaceHeight;
@@ -49,6 +51,9 @@ public:
 
     //grab the time variable
     void attachTime(double& tick);
+
+    //grab the player object
+    void attachPlayer(Player &plyr);
 
     //add a message to the queue
     void pushMessage(std::string message);
