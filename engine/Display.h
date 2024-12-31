@@ -28,11 +28,8 @@ private:
 
         char centerChar = '@';
         char voidChar = '.';
-        //hurts preformance but improves the game speed
+        //hurts preformance but improves the game feel
         char voidArr[12] = {'.', '.', '.','.','.','.','.','.','.', '-','~', '|'};
-
-        
-
 
         wchar_t *frame; //frame buffer for the display
 
@@ -48,7 +45,7 @@ private:
         const Game *game = nullptr;
         const int *gHeight;
         const int *gWidth;
-        const char** gameSpace;
+        const char** gameSpace; //this is where most displayed elements come from
 public:
     //constructor
     Display();

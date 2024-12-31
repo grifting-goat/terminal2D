@@ -72,8 +72,8 @@ int main() {
         //temp this will later be handeled in player class
 
         //check for exit
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {exit(0);}
-        if (GetAsyncKeyState(VK_BACK) & 0x8000) {exit(0);}
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {break;}
+        if (GetAsyncKeyState(VK_BACK) & 0x8000) {break;}
 
         //row travesal
         if      (GetAsyncKeyState('W') & 0x8000) {clientPos.first -= speed*dTick;}
@@ -89,7 +89,8 @@ int main() {
         window.flip();
       
 //*/
+    }
 
-}
+    return 0;
 
 }
