@@ -12,19 +12,27 @@ Game::Game() {
     //Map map();
     totalScore = 0;
     timeSpent = 0;
+    
     //get map data
-
-    //temp example
-    spaceHeight = 300;
-    spaceWidth = 300;
-    allocateSpace();
+    //spaceHeight = map.getDimensions().first;
+    //spaceWidth = map.getDimensions().second;
+    //allocateSpace();
+    //propogateMap(map);
 }
 
 Game::Game(Map &map) {
     totalScore = 0;
     timeSpent = 0;
+
     //get map data
-    //propogateMap();
+    spaceHeight = map.getDimensions().first;
+    spaceWidth = map.getDimensions().second;
+
+    spaceMap = &map;
+
+    allocateSpace();
+    propogateMap(map);
+    spawns = map.getSpawns();
 }
 
 void Game::incrementScore(int n) {
@@ -39,9 +47,6 @@ void Game::attachTime(double& tick) {
     gTick = &tick;
 }
 
-void Game::attachPlayer(Player &plyr) {
-    player = &plyr;
-}
 
 void Game::pushMessage(std::string message) {
     gameMessages.push(message);
@@ -85,6 +90,10 @@ const char** Game::getSpaceRef() const {
     return const_cast<const char**>(space); 
 }
 
+std::vector<std::pair<int,int>> Game::getSpawns() {
+    return spawns;
+}
+
 void Game::update() {
     if (gTick != nullptr) {timeSpent += *gTick;}
     //update things
@@ -109,3 +118,8 @@ void Game::deallocateSpace() {
     delete[] space;
 }
 
+void Game::propogateMap(Map &map) {
+
+    space = map.getMap();
+
+}

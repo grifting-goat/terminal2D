@@ -6,16 +6,20 @@ handles displaying the graphics and the terminal window
 created by levi morris - 12/29/24
 */
 
-
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
 #include <windows.h>
 #include <stdexcept>
-#include "Game.h"
-#include "Display.h"
 #include <string>
 #include <iostream>
+
+#include "Game.h"
+
+class Player;
+class Entity;
+class Map;
+class Game;
 
 class Display {
 
@@ -26,7 +30,7 @@ private:
         int tHeight; //height of terminal
         int tWidth; //width of terminal
 
-        char centerChar = '@';
+        char centerChar = '+';
         char voidChar = '.';
         //hurts preformance but improves the game feel
         char voidArr[12] = {'.', '.', '.','.','.','.','.','.','.', '-','~', '|'};
@@ -82,6 +86,8 @@ public:
     void toggleCameraCenter(bool show);
 
     void toggleDynamicVoid(bool show);
+
+    const double* getTick();
 
     //destructor
     ~Display();

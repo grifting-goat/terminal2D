@@ -12,6 +12,8 @@ created by levi morris - 12/29/24
 #include "engine/Display.h"
 #include "engine/Game.h"
 #include "engine/Player.h"
+#include "engine/Map.h"
+
 using namespace std;
 
 const int TICK_RATE = 120;
@@ -34,12 +36,13 @@ int main() {
     double gTick; //game tick
 
     Player player;
-    float speed = 15; //also temp
 
-    Game game;
+    Map testMap("rectVoid.txt");
+
+    Game game(testMap);
     game.attachTime(gTick);
-    game.attachPlayer(player);
-    game.voidSpace(' ');
+    std::pair<int,int> testSpawn = game.getSpawns()[0];
+    //game.voidSpace(' ');
 
     Display window;
     //attach relavent obj/data
@@ -49,7 +52,11 @@ int main() {
     //toggle settings
     window.toggleFramesPerSecond(true);
     window.toggleCameraCenter(true);
-    window.toggleDynamicVoid(true);    
+    window.toggleDynamicVoid(true);   
+
+    player.attachDisplay(window);
+    player.setPosition(testSpawn);
+    player.attachSpace(game.getSpaceRef(), game.getSpaceDimRefs().first, game.getSpaceDimRefs().first );
 
     while(true) {
         //timing
@@ -77,14 +84,11 @@ int main() {
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {break;}
         if (GetAsyncKeyState(VK_BACK) & 0x8000) {break;}
 
-        //row travesal
-        if      (GetAsyncKeyState('W') & 0x8000) {player.incrementPosition({-speed * dTick,0});}
-        else if (GetAsyncKeyState('S') & 0x8000) {player.incrementPosition({speed * dTick,0});}
+        player.getInputs();
+        player.simplePhys();
+        player.update();
 
-        //col traversal
-        if      (GetAsyncKeyState('D') & 0x8000) {player.incrementPosition({0,speed * dTick});}
-        else if (GetAsyncKeyState('A') & 0x8000) {player.incrementPosition({0,-speed * dTick});}
-
+        
 ///*
         
         window.update();

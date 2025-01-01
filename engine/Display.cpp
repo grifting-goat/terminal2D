@@ -93,8 +93,10 @@ void Display::update() {
     int n = 0;
     for (int r = lowerBound; r < upperBound; r++) {
         for (int c = leftBound; c < rightBound; c++) {
-            //if is inbounds
-            if (inBounds(r,c)) {frame[n++] = gameSpace[r][c];}
+            //if is inbounds //do not flip order
+            if (inBounds(r,c) && gameSpace[r][c] != 'b') {
+                frame[n++] = gameSpace[r][c];
+            }
             else{
                 if(dynamicVoid) {frame[n++] = voidArr[rand()%(sizeof(voidArr))];}
                 else {frame[n++] = voidChar;}
@@ -162,6 +164,11 @@ void Display::toggleCameraCenter(bool show) {
 
 void Display::toggleDynamicVoid(bool show) {
     dynamicVoid = show;
+}
+
+const double* Display::getTick() {
+    if (dTick != nullptr) {return dTick;}
+    else {throw std::runtime_error("requested tick from unattached display"); return dTick;}
 }
 
 Display::~Display() {
